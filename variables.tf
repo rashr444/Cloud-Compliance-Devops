@@ -12,7 +12,7 @@ variable "region" {
 variable "artifact_repo" {
   description = "Artifact Registry repository name where container images are pushed"
   type        = string
-  default     = "sample-repo"   # change this to your preferred repo name
+  default     = "sample-repo" # change this to your preferred repo name
 }
 
 variable "image_tag" {
@@ -20,3 +20,11 @@ variable "image_tag" {
   type        = string
   default     = "v1"
 }
+
+# variables.tf (add this variable)
+variable "alert_email" {
+  type        = string
+  description = "Email address to receive monitoring alerts"
+  default     = "rashr444@gmail.com" # change or override via tfvars
+}
+
