@@ -1,6 +1,8 @@
 # cloud-compliance-project
 
-## Quick start (local)
-
-1. Install gcloud & terraform & git.
-2. Authenticate with gcloud:
+##Architecture: GCP (Cloud Run, Cloud SQL, KMS, Secret Manager)
+###How to deploy:
+  - Setup gcloud auth
+  - terraform init && terraform apply
+##CI: GitHub Actions builds image, pushes to Artifact Registry, runs Terraform
+###Compliance mapping: see COMPLIANCE.md
