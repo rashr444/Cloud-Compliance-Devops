@@ -23,3 +23,12 @@ It’s designed as a portfolio-ready project that shows both DevOps skills and G
     Logging & Monitoring for auditability
     Alerts for IAM changes, DB errors, login failures
     Compliance Mapping to major frameworks (ISO 27001, GDPR, COBIT, DORA)
+
+# Compliance Mapping
+
+See COMPLIANCE.md for details on how this project maps to:
+
+    ISO 27001 (Access control, audit logging, encryption)
+    GDPR (Data minimization, breach alerts, right to erasure)
+    COBIT (Risk management, security services)
+    DORA (Backups, incident classification, resilience testing)
