@@ -1,4 +1,4 @@
-# cloud-compliance-project
+# Cloud-Compliance-Project
 
 ## Architecture: GCP (Cloud Run, Cloud SQL, KMS, Secret Manager)
 ### How to deploy:
