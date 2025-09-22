@@ -32,3 +32,13 @@ See COMPLIANCE.md for details on how this project maps to:
     GDPR (Data minimization, breach alerts, right to erasure)
     COBIT (Risk management, security services)
     DORA (Backups, incident classification, resilience testing)
+
+# Monitoring & Alerts
+
+Cloud Logging: All app + infra logs collected
+Monitoring: Dashboards for system health
+Alerts Configured for:
+    IAM role changes
+    Failed login attempts
+    Database errors
+    High latency
