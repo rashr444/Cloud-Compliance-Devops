@@ -1,8 +1,12 @@
-# Cloud-Compliance-Project
+# Cloud Compliance DevOps Project
 
-## Architecture: GCP (Cloud Run, Cloud SQL, KMS, Secret Manager)
-### How to deploy:
-  - Setup gcloud auth
-  - terraform init && terraform apply
-## CI: GitHub Actions builds image, pushes to Artifact Registry, runs Terraform
-### Compliance mapping: see COMPLIANCE.md
+
+This project demonstrates how to build a secure, compliant, and automated cloud infrastructure using:
+
+    Terraform (Infrastructure as Code)
+    GitHub Actions (CI/CD)
+    Docker + Cloud Run (App Deployment)
+    GCP Services (SQL, IAM, KMS, Secret Manager, Logging & Monitoring)
+    Compliance Mapping (ISO 27001, GDPR, COBIT, DORA)
+
+It’s designed as a portfolio-ready project that shows both DevOps skills and GRC (Governance, Risk, and Compliance) knowledge.
