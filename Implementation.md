@@ -42,4 +42,24 @@ A dedicated Google Cloud Project was provisioned, and IAM roles and bindings wer
 - **Dependencies**: These steps must be completed **first**, as all other services depend on IAM configurations and enabled APIs.
 - Ensures a secure foundation for provisioning other GCP resources.
 
+## Terraform Backend Setup
+
+After configuring IAM and enabling required APIs, the next step is to set up **Terraform backend** for state management.
+
+### Steps
+
+1. **Create a Service Account**
+   - Provision a dedicated service account with **necessary permissions**:
+     - `roles/storage.admin` → To manage GCS buckets.
+     - `roles/iam.serviceAccountUser` → To allow Terraform to impersonate the service account.
+     - `roles/editor` → For resource creation during Terraform runs.
+   - Download the service account key JSON for Terraform authentication.
+
+2. **Create a GCS Bucket for Terraform State**
+   - This bucket will store your Terraform state files securely.
+   ```bash
+   gsutil mb -l <REGION> gs://my-terraform-state-bucket
+
+3. **Configure Terraform Backend in main.tf
+   - which contains information of the structure
 
