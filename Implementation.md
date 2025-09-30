@@ -182,3 +182,31 @@ Alerts configured for:
  - Uptime checks for application endpoints
  - Notification channels: email and Slack.
 
+## CI/CD Integration
+### GitHub Actions + Terraform
+- Workflow (terraform.yml) runs terraform init, plan, and apply.
+- Uses service account credentials stored in GitHub Secrets.
+
+### GitHub Actions + Docker Deployment
+Workflow (deploy.yml) builds Docker image → pushes to Artifact Registry → deploys to Cloud Run.
+
+Steps:
+- Checkout source code.
+- Build Docker image.
+- Authenticate with GCP (gcloud auth activate-service-account).
+- Push image to Artifact Registry.
+- Run gcloud run deploy with new image.
+
+# Implementation Order Summary
+- IAM & Project Setup
+- VPC & Networking
+- Firewall Rules
+- Artifact Registry
+- Docker Build & Push
+- Secret Manager
+- Cloud SQL (DB Layer)
+- Cloud Storage (Backups, State)
+- Cloud Run (Application Layer)
+- Monitoring & Alerts
+- CI/CD Integration (Terraform + Docker Deployments)
+- Security Hardening
