@@ -49,13 +49,7 @@ After configuring IAM and enabling required APIs, the next step is to set up **T
 
 3. **Configure Terraform Backend in main.tf
    - which contains information of the structure
-
-## Terraform Implementation Overview
-
-This `main.tf` provisions a complete GCP environment with IAM, KMS, Secret Manager, Cloud SQL, Cloud Run, Storage, and monitoring.
-
----
-
+  
 ### Configure Terraform Varaible 
 - Set up the google provider with project, region, and service account authentication:
 ```hcl
@@ -65,6 +59,12 @@ provider "google" {
   credentials = file("<SERVICE_ACCOUNT_KEY>.json")
 }
 ```
+
+## Terraform Implementation Overview
+
+This `main.tf` provisions a complete GCP environment with IAM, KMS, Secret Manager, Cloud SQL, Cloud Run, Storage, and monitoring.
+
+---
 
 ### Key Management Service (KMS)
 - Enabled centralized encryption for sensitive data as per below format in main.tf:
