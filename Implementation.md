@@ -1,8 +1,8 @@
-#Implemenatation Of Services
+# Implemenatation Of Services
 
 This document provides a detailed breakdown of all services implemented in the Terraform-based GCP infrastructure project. It explains how each service is configured, dependencies between them, and the order of implementation. This ensures reproducibility, maintainability, and clarity for future updates.
 
-### 1.1. Infrastructure Foundation
+## Infrastructure Foundation
 ## Google Cloud Project Setup with Terraform
 
 A dedicated Google Cloud Project was provisioned, and IAM roles and bindings were applied via Terraform to ensure **least-privilege access**.
@@ -62,4 +62,5 @@ After configuring IAM and enabling required APIs, the next step is to set up **T
 
 3. **Configure Terraform Backend in main.tf
    - which contains information of the structure
+
 
