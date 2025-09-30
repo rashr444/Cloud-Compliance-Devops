@@ -210,3 +210,14 @@ Steps:
 - Monitoring & Alerts
 - CI/CD Integration (Terraform + Docker Deployments)
 - Security Hardening
+
+## 🧪 Testing the Setup
+
+### Run locally:
+terraform init
+terraform plan
+terraform apply
+
+
+### Verify deployed app:
+curl https://<cloud-run-service-url>
