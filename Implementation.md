@@ -18,33 +18,17 @@ A dedicated Google Cloud Project was provisioned, and IAM roles and bindings wer
     - Key Management Service (KMS): cloudkms.googleapis.com
     - Cloud Logging: logging.googleapis.com
 
-
-2. **Configure Terraform Provider**
-   - Set up the `google` provider with service account authentication:
-     ```hcl
-     provider "google" {
-       project     = "<PROJECT_ID>"
-       region      = "<REGION>"
-       credentials = file("<SERVICE_ACCOUNT_KEY>.json")
-     }
-     ```
-
-3. **Define IAM Roles and Bindings**
-   - Apply least-privilege IAM roles in `iam.tf`:
-     ```hcl
-     resource "google_project_iam_member" "example" {
-       project = "<PROJECT_ID>"
-       role    = "roles/viewer"
-       member  = "serviceAccount:<SERVICE_ACCOUNT_EMAIL>"
-     }
-     ```
-   - *(Add additional IAM bindings as per your project requirements)*
-
-### Notes
-
-- **Dependencies**: These steps must be completed **first**, as all other services depend on IAM configurations and enabled APIs.
-- Ensures a secure foundation for provisioning other GCP resources.
-
+2. **Define IAM Roles and Bindings**
+   - Apply least-privilege IAM roles :
+    - roles/secretmanager.secretAccessor → Access secrets from Secret Manager.
+    - roles/cloudsql.client → Connect and manage Cloud SQL instances.
+    - roles/cloudkms.cryptoKeyDecrypter → Decrypt data using KMS crypto keys.
+    - roles/logging.logWriter → Write logs to Cloud Logging for audit and monitoring.
+    - roles/run.invoker → Allow invocation of Cloud Run services.
+    - roles/viewer → Read-only access to view resources.
+    - roles/editor → (If required elsewhere) General resource modification access.
+    - roles/storage.admin → Manage Cloud Storage buckets and objects (if needed for backups or logs).
+     
 ## Terraform Backend Setup
 
 After configuring IAM and enabling required APIs, the next step is to set up **Terraform backend** for state management.
@@ -74,7 +58,127 @@ This `main.tf` provisions a complete GCP environment with IAM, KMS, Secret Manag
 
 ### Configure Terraform Varaible 
 - Set up the google provider with project, region, and service account authentication:
-  
+```hcl
+provider "google" {
+  project     = var.project
+  region      = var.region
+  credentials = file("<SERVICE_ACCOUNT_KEY>.json")
+}
+```
 
+### Key Management Service (KMS)
+- Enabled centralized encryption for sensitive data as per below format in main.tf:
+  ```hcl {
+  resource "google_kms_key_ring" "keyring" {
+  name     = "demo-keyring"
+  location = var.region
+  project  = var.project
+}
+resource "google_kms_crypto_key" "crypto" {
+  name     = "demo-key"
+  key_ring = google_kms_key_ring.keyring.id
+}
+}```
 
+## Infrastructure Components
+
+### Networking (VPC & Firewall)
+- **Custom VPC**: `devops-vpc` created.
+- **Subnets**: Defined for controlled resource segmentation.
+- **Firewall Rules**: Configured to allow only necessary traffic (e.g., SSH, HTTPS).
+
+Provides **network isolation** and **security** for cloud resources.
+
+### Cloud SQL (Managed Database)
+- **PostgreSQL instance** provisioned with Terraform.
+- **Automated backups** enabled for resilience.
+- **Database credentials** stored securely in **Secret Manager**.
+
+Ensures a **persistent, managed database** with secure credential handling.
+
+### Secret Manager
+- Stores:
+  - Database password
+  - API keys
+  - Other sensitive configuration
+- Managed with `google_secret_manager_secret` in Terraform.
+
+Ensures **no secrets** are exposed in GitHub or Terraform code.
+
+---
+
+### Storage Bucket (GCS)
+- Stores logs, backups, and compliance data with versioning.
+```hcl
+resource "google_storage_bucket" "compliance_bucket" {
+  name          = "${var.project}-compliance-bucket"
+  location      = var.region
+  force_destroy = true
+
+  versioning { enabled = true }
+}
+```
+
+### Artifact Registry (Container Repository)
+- **Private Docker registry** for application images.
+- Docker authentication:
+  ```bash
+  gcloud auth configure-docker us-central1-docker.pkg.dev
+
+Build & push application image:
+```hcl
+docker build -t us-central1-docker.pkg.dev/<PROJECT_ID>/sample-repo/sample-app:v1 .
+docker push us-central1-docker.pkg.dev/<PROJECT_ID>/sample-repo/sample-app:v1
+```
+
+### Cloud Run & Docker Application
+- Deploy containerized serverless application with auto-scaling.
+```hcl{
+resource "google_cloud_run_service" "sample" {
+  name     = "sample-app"
+  location = var.region
+  project  = var.project
+
+  template {
+    spec {
+      service_account_name = google_service_account.run_sa.email
+      containers {
+        image = "gcr.io/cloudrun/hello"
+        env {
+          name  = "DB_INSTANCE_CONNECTION_NAME"
+          value = google_sql_database_instance.postgres.connection_name
+        }
+        env {
+          name  = "DB_USER"
+          value = google_sql_user.postgres_user.name
+        }
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}
+
+resource "google_cloud_run_service_iam_member" "invoker" {
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+  project  = google_cloud_run_service.sample.project
+  location = google_cloud_run_service.sample.location
+  service  = google_cloud_run_service.sample.name
+}
+```
+## Monitoring & Alerts
+
+### Cloud Monitoring & Logging
+-Metrics and dashboards enabled.
+
+### Alerting Policies
+Alerts configured for:
+ - Cloud Run CPU/Memory thresholds
+ - DB connections and storage usage
+ - Uptime checks for application endpoints
+ - Notification channels: email and Slack.
 
