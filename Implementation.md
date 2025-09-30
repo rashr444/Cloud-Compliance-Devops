@@ -11,10 +11,13 @@ A dedicated Google Cloud Project was provisioned, and IAM roles and bindings wer
 
 1. **Enable Required APIs**
    - Activate all APIs needed for the project:
-     - `compute.googleapis.com` (Compute Engine)
-     - `sqladmin.googleapis.com` (Cloud SQL)
-     - `run.googleapis.com` (Cloud Run)
-     - *(Add any additional APIs your project requires)*
+    - Compute Engine: compute.googleapis.com
+    - Cloud SQL: sqladmin.googleapis.com
+    - Cloud Run: run.googleapis.com
+    - Secret Manager: secretmanager.googleapis.com
+    - Key Management Service (KMS): cloudkms.googleapis.com
+    - Cloud Logging: logging.googleapis.com
+
 
 2. **Configure Terraform Provider**
    - Set up the `google` provider with service account authentication:
@@ -62,5 +65,16 @@ After configuring IAM and enabling required APIs, the next step is to set up **T
 
 3. **Configure Terraform Backend in main.tf
    - which contains information of the structure
+
+## Terraform Implementation Overview
+
+This `main.tf` provisions a complete GCP environment with IAM, KMS, Secret Manager, Cloud SQL, Cloud Run, Storage, and monitoring.
+
+---
+
+### Configure Terraform Varaible 
+- Set up the google provider with project, region, and service account authentication:
+  
+
 
 
